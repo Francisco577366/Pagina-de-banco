@@ -14,6 +14,12 @@ const tabsContainer = document.querySelector('.operations__tab-container');
 const tabsContent = document.querySelectorAll('.operations__content');
 const nav = document.querySelector('.nav');
 const header = document.querySelector('.header');
+const slides = document.querySelectorAll('.slide');
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+const dotContainer = document.querySelector('.dots');
+const slider = document.querySelector('.slider');
+const allSection = document.querySelectorAll('.section');
 
 
 const openModal = function (e) {
@@ -46,14 +52,9 @@ const message = document.createElement('div');
 message.innerHTML =
   'We use cookied for improved functionality and analytics. <button class ="btn btn--close-cookie">Got it!</button>';
 
-//header.prepend(message);
+
 header.append(message);
-//header.append(message.cloneNode(true));
 
-//header.before(message);
-//header.after(message);
-
-//Delete elements
 
 document
   .querySelector('.btn--close-cookie')
@@ -61,43 +62,6 @@ document
     message.remove();
   });
 
-//Styles
-/*message.style.backgroundColor = '#37383d';
-message.style.width = '103%';
-
-console.log(message.style.height);
-console.log(message.style.backgroundColor);
-
-console.log(getComputedStyle(message).color);
-console.log(getComputedStyle(message).height);
-
-message.style.color = 'white';
-message.style.height =
-  Number.parseFloat(getComputedStyle(message).height, 10) + 30 + 'px';
-
-document.documentElement.style.setProperty('--color-primary', 'orangered');
-
-const logo = document.querySelector('.nav__logo');
-console.log(logo.alt);
-console.log(logo.src);
-console.log(logo.className);
-
-logo.alt = 'Beautiful minimalist logo';
-
-// Non-standard
-console.log(logo.designer);
-console.log(logo.getAttribute('designer'));
-logo.setAttribute('company', 'Bankist');
-
-const link = document.querySelector('.nav__link--btn');
-
-console.log(link.href);
-console.log(link.getAttribute('href'));
-// Classes
-// add
-// remove
-//toggle
-//contains */
 
 btnScrollTo.addEventListener('click', function (e) {
   const s1coords = section1.getBoundingClientRect();
@@ -107,30 +71,11 @@ btnScrollTo.addEventListener('click', function (e) {
 
   console.log('Current Scroll X/Y', window.scrollX, window.scrollY);
 
-  // Scroll simple
-  // window.scrollTo(
-  // s1coords.left + window.scrollX,
-  //s1coords.top + window.scrollY
-  //);
-
-  // Scroll with
-  //window.scrollTo({
-  //left: s1coords.left + window.scrollX,
-  //top: s1coords.top + window.scrollY,
-  //behavior: 'smooth',
-  //});
-
   // Actualy scroll
-
   section1.scrollIntoView({ behavior: 'smooth' });
 });
 
-/*document.querySelectorAll('.nav__link').forEach(function (el) {
-  el.addEventListener('click', function (e) {
-    e.preventDefault();
-    
-  });
-});*/
+
 
 
 // Header buttons scroll
@@ -145,10 +90,9 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
   }
 });
 
-// tabbed component
+// tabbed component section 2
 tabsContainer.addEventListener('click', function(e){
   const clicked = e.target.closest('.operations__tab');
-  console.log(clicked);
 
   if(!clicked) return;
 
@@ -184,6 +128,7 @@ nav.addEventListener('mouseout', handleHover.bind(1));
 
 
 
+// Menu sticky
 const navHeight = nav.getBoundingClientRect().height;
 // Function que toma los datos de interSectionObserver y los comprueba.
 const stickyNav = function(entries){
@@ -201,8 +146,8 @@ const headerObserver = new IntersectionObserver(stickyNav, {
   rootMargin: `${-navHeight}px`,
 });
 headerObserver.observe(header);
+// Menu sticky
 
-const allSection = document.querySelectorAll('.section');
 
 const revealSection = function(entries, observer){
 entries.forEach(entry => {
@@ -211,6 +156,7 @@ entries.forEach(entry => {
   observer.unobserve(entry.target);
 });
 };
+
 
 const sectionObserver = new IntersectionObserver(revealSection, {
   root:null,
@@ -221,7 +167,7 @@ allSection.forEach(function(section){
   sectionObserver.observe(section);
   section.classList.add('section--hidden');
 });
-
+// Img Borroso
 const imgTargets = document.querySelectorAll('img[data-src]');
 console.log(imgTargets);
 
@@ -242,78 +188,80 @@ const imgObserver = new IntersectionObserver(loadImg, {
   root:null,
   threshold: 0,
   rootMargin: '100px',
-
-  
 });
 
 imgTargets.forEach(img => imgObserver.observe(img));
-// Sticky navigation
-/*const initialCoords = section1.getBoundingClientRect()
-console.log(initialCoords);
 
-// Sticky navigation with windows Scroll
-window.addEventListener('scroll', function(){
-console.log(window.scrollY);
+// Img Borroso
 
-if(window.scrollY > initialCoords.top)
- nav.classList.add('sticky');
-else nav.classList.remove('sticky');
-});*/
-/*const obsCallback = function (entries, observer){
-  entries.forEach(entry => {
-    console.log(entry);
-  })
+//Slider 
+let curSlide = 0;
+const maxSlide = slides.length;
+
+const createDots = function(){
+  slides.forEach(function(_, i){
+    dotContainer.insertAdjacentHTML('beforeend',`<button class="dots__dot" data-slide="${i}"></button>`)
+  });
 };
 
-const obsOptions = {
-  root: null,
-  threshold: [0, 0.2],
-  observer.observe(section1);
-}*/
+
+const activateDot = function(slide){
+  document.querySelectorAll('.dots__dot').forEach(dot => dot.classList.remove('dots__dot--active'));
+
+  document.querySelector(`.dots__dot[data-slide="${slide}"]`).classList.add('dots__dot--active');
+}
 
 
 
 
+const goToSlide = function(slide){
+  slides.forEach((s, i ) => s.style.transform = `translateX(${100 * (i - slide)}%)`);
+}
+
+const nextSlide = function(){
+  if(curSlide === maxSlide - 1){
+    curSlide = 0
+  }else{
+    curSlide++;
+  }
+  goToSlide(curSlide);
+  activateDot(curSlide);
+};
 
 
-/*const randomInt = (min, max) =>
-  Math.floor(Math.random() * (max - min + 1) + min);
 
-const randomColor = () =>
-  `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)} , ${randomInt(0, 255)})`;
+const prevSlide = function(){
+  if(curSlide === 0){
+    curSlide = maxSlide - 1;
+  }else{
+    curSlide--;
+  }
+  goToSlide(curSlide);
+  activateDot(curSlide);
+};
 
-document.querySelector('.nav__link').addEventListener('click', function (e) {
-  this.style.backgroundColor = randomColor();
-  console.log('NAV', e.target, e.currentTarget);
+const init = function(){
+  goToSlide(0);
+  createDots();
+  activateDot(0);
+}
+init();
 
-  //e.stopPropagation();
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
+
+document.addEventListener('keydown', function(e){
+  if(e.key === 'ArrowRight'){
+    nextSlide()
+  }else if (e.key === 'ArrowLeft'){
+    prevSlide()
+  };
 });
 
-document.querySelector('.nav__links').addEventListener('click', function (e) {
-  this.style.backgroundColor = randomColor();
-  console.log('NAV', e.target, e.currentTarget);
-});
-
-document.querySelector('.nav').addEventListener('click', function (e) {
-  this.style.backgroundColor = randomColor();
-  console.log('NAV', e.target, e.currentTarget);
-});*/
-
-/*const h1 = document.querySelector('h1');
-console.log(h1.childNodes);
-console.log(h1.children);
-h1.firstElementChild.style.color = 'white';
-h1.lastElementChild.style.color = 'orangered';
-
-// Elementos padres
-console.log(h1.parentNode);
-console.log(h1.parentElement);
-
-h1.closest('.header').style.background = 'var(--gradient-secondary)';
-
-console.log(h1.previousElementSibling);
-console.log(h1.nextElementSibling);
-
-[...h1.parentElement.children].forEach(function(el){
-  if(el !== h1) el.style.transform = 'scale(0.5)';
-})*/
+dotContainer.addEventListener('click', function(e){
+  if(e.target.classList.contains('dots__dot')){
+    curSlide = Number(e.target.dataset.slide);
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  }
+})
